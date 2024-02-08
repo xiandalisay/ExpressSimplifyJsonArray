@@ -36,22 +36,34 @@ function startServer() {
 	  const fields = Array.isArray(fieldNames) ? fieldNames : (typeof fieldNames === 'string' || fieldNames instanceof String) ? [fieldNames]: [];
 	    
 	  // Extract only specified fields from the response data
-      if (url) {
+     if (url) {
 	    if(fields.length > 0) {
+	    	if(Array.isArray(response?.data?.data?.data)) {
 
-	      let simplifiedData = [];
+	        let simplifiedData = [];
 
-	      //this corresponds to $.data.data
-	      response?.data?.data?.data?.forEach(data => {
-          const simplifiedObj = {};
+	        //this corresponds to $.data.data
+	        response?.data?.data?.data?.forEach(data => {
+            const simplifiedObj = {};
+	          fields.forEach(field => {
+                if (data.hasOwnProperty(field)) {
+	              simplifiedObj[field] = data[field];
+	            }
+	          });
+            simplifiedData.push(simplifiedObj);
+		  	  });
+	        res.json(Object.assign({}, response.data,{ data: { data: simplifiedData } } ));	
+	      } else {
+
+	        let simplifiedData = {};
+
 	        fields.forEach(field => {
-              if (data.hasOwnProperty(field)) {
-	            simplifiedObj[field] = data[field];
+            if (response?.data?.data.hasOwnProperty(field)) {
+	            simplifiedData[field] = response?.data?.data[field];
 	          }
 	        });
-            simplifiedData.push(simplifiedObj);
-		  	});
-	      res.json(Object.assign({}, response.data,{ data: { data: simplifiedData } } ));	
+	        res.json(Object.assign({}, response.data, { data: simplifiedData } ));	
+	      } 
 	    } else {
 	      res.json(response?.data);
 	    }
