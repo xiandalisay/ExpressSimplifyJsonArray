@@ -17,7 +17,6 @@ function startServer() {
 	  // Make a request to the provided URL
 	  const response = await axios.get(url);
 
-
       // const response = {
       // 	data: {
       // 		data: [{
@@ -43,18 +42,18 @@ function startServer() {
 	      let simplifiedData = [];
 
 	      //this corresponds to $.data.data
-	      response.data.data.forEach(data => {
-            const simplifiedObj = {};
+	      response?.data?.data?.data?.forEach(data => {
+          const simplifiedObj = {};
 	        fields.forEach(field => {
               if (data.hasOwnProperty(field)) {
 	            simplifiedObj[field] = data[field];
 	          }
 	        });
             simplifiedData.push(simplifiedObj);
-		  })
-	      res.json(Object.assign({}, response,{ data: { data: simplifiedData } }));	
+		  	});
+	      res.json(Object.assign({}, response.data,{ data: { data: simplifiedData } } ));	
 	    } else {
-	      res.json(response);
+	      res.json(response?.data);
 	    }
 	  } else {
 		 res.status(404).json({ error: 'Url not found' });
